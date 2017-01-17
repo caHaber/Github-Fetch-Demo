@@ -1,0 +1,25 @@
+
+  circle {
+    fill: steelblue;
+  }
+
+    /*path, line {*/
+      /*fill: none;*/
+      /*stroke: #000;*/
+      /*shape-rendering: crispEdges;*/
+    /*}*/
+
+  .marked {
+    width:33vw;
+    position: absolute;
+    top:0;
+    right: 0;
+
+  }
+  .info {
+    width:20vw;
+    position: absolute;
+    top:0;
+    right: 33vw;
+
+  }
