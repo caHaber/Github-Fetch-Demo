@@ -19,34 +19,25 @@ var Controls = React.createClass({
 		return (
             <MuiThemeProvider>
                 <div className="controls">
-                    <br/>
-                    <SelectField
-                        key="2"
-                        floatingLabelText="Select Filter Amount"
-                        value={this.props.filterNum}
-                        onChange={this.props.changeFilter}
-                    >
-                        <MenuItem value={'50'} primaryText="50" />
-                        <MenuItem value={'100'} primaryText="100" />
-                        <MenuItem value={'1000'} primaryText="Show All" />
-
-                    </SelectField>
                     <TextField
-                        hintText="Search"
+                        id="search"
+                        value={this.props.searchQ}
                         onChange={this.props.search}
                     />
                     <SelectField
-                        key="3"
-                        floatingLabelText="Select Render Type"
-                        value={this.props.renderType}
-                        onChange={this.props.changeRender}
+                        floatingLabelText="Primary Language"
+                        value={this.props.language}
+                        onChange={this.props.changeLanguage}
                     >
-                        <MenuItem value={'react'} primaryText="react" />
-                        <MenuItem value={'d3'} primaryText="d3" />
-
-
+                        <MenuItem value={'javascript'} primaryText="JavaScript" />
+                        <MenuItem value={'swift'} primaryText="Swift" />
+                        <MenuItem value={'java'} primaryText="Java" />
+                        <MenuItem value={'css'} primaryText="CSS" />
+                        <MenuItem value={'c++'} primaryText="C++" />
+                        <MenuItem value={'all'} primaryText="All Languages" />
                     </SelectField>
                 </div>
+
             </MuiThemeProvider>
 		);
 	}

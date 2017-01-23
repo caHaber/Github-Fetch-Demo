@@ -6,13 +6,13 @@ var BarChart = function(){
     var height = 500,
         width = 500,
         search = '',
-        xScale = d3.scaleBand(),
-        yScale = d3.scaleLinear(),
+        xScale = d3.scaleLinear(),
+        yScale = d3.scaleBand(),
         xTitle = 'X Axis Title',
         yTitle = 'Y Axis Title',
         fill = (d) => 'blue',
         margin = {
-            left:70,
+            left:130,
             bottom:100,
             top:0,
             right:50,
@@ -78,32 +78,33 @@ var BarChart = function(){
                 ele.select('svg').call(tip);
 
                 //Sorts data on descending
+                let names = data.map((d) => (d.y))
+                yScale.rangeRound([chartHeight, 0] ).domain(names);
 
-                xScale.rangeRound([0, chartWidth]).domain(data.map((d) => d.x));
 
-                var yMin = d3.min(data, (d) => +d.y) * .95;
-                var yMax = d3.max(data, (d) => +d.y) * 1.05;
-                yScale.range([chartHeight, 0]).domain([yMin, yMax]);
+                var yMin = d3.min(data, (d) => +d.x) * .95;
+                var yMax = d3.max(data, (d) => +d.x) * 1.05;
+                xScale.range([0, chartWidth]).domain([yMin, yMax]);
 
                 xAxis.scale(xScale);
                 yAxis.scale(yScale);
+
                 ele.select('.axis.x').transition().duration(1000).call(xAxis)
                 .selectAll("text")
-                .style("text-anchor", "end")
-                .attr("dx", "-.8em")
-                .attr("dy", ".15em")
-                .attr("transform", "rotate(-45)");
+                .style("text-anchor", "middle");
 
-                ele.select('.axis.y').transition().duration(1000).call(yAxis);
+                ele.select('.axis.y').transition().duration(1000).call(yAxis)
+                    .selectAll("text").text((d) => d.split("/")[1])
+                    .style("text-anchor", "end");
 
                 // Update titles
                 ele.select('.title.x').text(xTitle)
                 ele.select('.title.y').text(yTitle)
 
-                let bars = ele.select('.chartG').selectAll('rect').data(data, (d) => d.x);
+                let bars = ele.select('.chartG').selectAll('rect').data(data, (d) => d.y);
 
                 function click(d){
-                   return chart.mark(d.x)
+                   return chart.mark(d.y)
                 }
 
                 function mouseover(){
@@ -116,12 +117,12 @@ var BarChart = function(){
                 }
 
                 bars.enter().append('rect')
-                    .attr('rx',30)
-                    .attr('ry',30)
-        			.attr('y', chartHeight)
+                    .attr('rx',10)
+                    .attr('ry',10)
+        			.attr('y', (d) => yScale(d.y))
         			.style('opacity', .3)
-        			.attr('x', (d) => xScale(d.x))
-                    .attr('width', xScale.bandwidth())
+        			.attr('x', 0)
+                    .attr('height', yScale.bandwidth())
                     .on('mouseover', mouseover)
                     .on('mouseout', mouseout)
                     .on('click', click)
@@ -130,13 +131,14 @@ var BarChart = function(){
                     .attr('fill', fill)
         			.transition()
         			.duration(1500)
-                    .attr('width', xScale.bandwidth() * .95)
+                    .attr('height', yScale.bandwidth() * .95)
+                    .attr('width', (d) => xScale(d.x))
                     .attr('rx',0)
                     .attr('ry',0)
                     // .delay((d) => xScale(d.x) * 2)
-                    .attr('x', (d) => xScale(d.x))
+                    .attr('x', 0)
                     .attr('y', (d) => yScale(d.y))
-                    .attr('height', (d) => (height- margin.top - margin.bottom) - yScale(d.y))
+                    // .attr('width', (d) => (height- margin.top - margin.bottom) - yScale(d.y))
 
                 // Use the .exit() and .remove() methods to remove elements that are no longer in the data
         		bars.exit().remove();
@@ -196,17 +198,9 @@ var BarChart = function(){
         fetchReadmeAPI(val);
     };
 
-    var myInit = { method: 'GET',
-        headers: {
-            'Authorization': 'Basic '+btoa('username:password'),
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        mode: 'cors',
-        cache: 'default' };
-
 
     function fetchReadme(value, title) {
-        fetch(value,myInit).then(function (response) {
+        fetch(value).then(function (response) {
 
             if(response.ok) {
                 return response.text();
@@ -230,7 +224,7 @@ var BarChart = function(){
     }
 
     function fetchReadmeAPI(value) {
-        fetch('https://api.github.com/repos/' + value + '/readme',myInit).then(function (response) {
+        fetch('https://api.github.com/repos/' + value + '/readme').then(function (response) {
 
             if(response.ok) {
                 return response.text();

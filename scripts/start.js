@@ -214,6 +214,12 @@ function runDevServer(host, port, protocol) {
     // WebpackDevServer is noisy by default so we emit custom message instead
     // by listening to the compiler events with `compiler.plugin` calls above.
     quiet: true,
+
+    //Headers added by Casey to access github repos
+    headers: {
+        'client_id': '29bbbbdac3995fb5bbc3',
+        'client_secret': '47e03d41996e06313cd12850f9da30c19e766f98',
+    },
     // Reportedly, this avoids CPU overload on some systems.
     // https://github.com/facebookincubator/create-react-app/issues/293
     watchOptions: {

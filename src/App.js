@@ -3,9 +3,14 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 import PlotComponent from './PlotComponent'
 import Controls from './Controls';
+import Loading from './Loading'
+import './css/ubuntu.css';
 import './css/github.css'
 import './style.css';
-import './css/animations.css'
+import './css/animations.css';
+
+
+
 
 class App extends Component{
     constructor() {
@@ -13,130 +18,122 @@ class App extends Component{
 
         this.state = {
             data:[],
-            xVar:'repo_name',
-            groupVar:'State',
-            yVar:'num_stars',
+            xVar:'stargazers_count',
+            yVar:'full_name',
             filterNum: '50',
             urlData:'data/Top1000GithubRepos.csv',
-            renderType: 'd3',
             gitData: '',
-            contains:''
+            searchQ:'',
+            language: 'javascript',
+            loading: false
         };
 
         this.changeX = this.changeX.bind(this);
-        this.changeFilter = this.changeFilter.bind(this);
+        this.changeLanguage = this.changeLanguage.bind(this);
         this.changeY = this.changeY.bind(this);
-        this.changeRender = this.changeRender.bind(this);
         this.loadGitData = this.loadGitData.bind(this);
         this.mergeData = this.mergeData.bind(this);
         this.search = this.search.bind(this);
     }
     componentWillMount() {
-        this.loadRawData();
+        // this.loadRawData();
         this.loadGitData();
     }
     loadGitData(){
 
 
-        var myInit = { method: 'GET',
-            headers: {
-                'Authorization': 'Basic '+btoa('caHaber:casemaker*21'),
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            mode: 'cors',
-            cache: 'default' };
-
         let app = this;
+        let lanT = '+language:' + this.state.language;
 
-        fetch('https://api.github.com/repositories',myInit)
+        if(this.state.language === 'all'){
+            lanT = '';
+        }
+
+        fetch('https://api.github.com/search/repositories?' + 'q=' + this.state.searchQ + lanT + '&sort=stars&order=desc')
             .then(function(response) {
                return response.json();
             }).then(function (action) {
-            app.setState({gitData:action});
+
+
+                action  =  action.items.map((d) => {
+
+                        return  {
+                            x : d[app.state.xVar],
+                            y : d[app.state.yVar],
+                            id: d.html_url,
+                            name: d.full_name};
+
+
+
+
+                    });
+                    app.setState({data: action});
             }).then(this.mergeData());
 
     }
     mergeData(){
-
-    }
-    loadRawData() {
-        d3.csv(this.state.urlData)
-            .row((d) => {
-
-                return {x : d[this.state.xVar],
-                        y : d[this.state.yVar],
-                        id: d.repo_id,
-                        name: d.repo_name};
-
-
-            })
-          .get((error, rows) => {
-              if (error) {
-                  console.error(error);
-                  console.error(error.stack);
-              }else{
-                  this.setState({data: rows});
-          } });
+        console.log("Done Loading github data!")
+      this.setState({loading:false});
 
     }
     changeX(event, index, value) {
         this.setState({xVar:value});
-        this.loadRawData();
+        // this.loadRawData();
     }
 
     changeY(event, index, value) {
         this.setState({yVar:value});
-        this.loadRawData();
-    }
-    changeRender(event, index, value) {
-        this.setState({renderType:value});
-        this.loadRawData();
+        // this.loadRawData();
     }
     search(event) {
-        this.setState({search:event.target.value.toLowerCase()})
+
+        let app = this;
+        app.setState({loading:true});
+        let p1 = new Promise(function(resolve, reject) {
+            // This is only an example to create asynchronism
+            window.setTimeout(
+                function() {
+                    // We fulfill the promise !
+                    resolve(app.loadGitData())
+                }, Math.random() * 2000 + 1000);
+        });
+
+        p1.then(app.setState({searchQ:event.target.value.toLowerCase()}));
     }
 
-    changeFilter(event, index, value) {
-        this.setState({filterNum:value});
+    changeLanguage(event, index, value){
+
+        let app = this;
+        app.setState({loading:true});
+        let p1 = new Promise(function(resolve, reject) {
+            // This is only an example to create asynchronism
+            window.setTimeout(
+                function() {
+                    // We fulfill the promise !
+                    resolve(app.loadGitData())
+                }, Math.random() * 2000 + 1000);
+        });
+
+        p1.then(app.setState({language:value}));
+
+
     }
+
+
+
 	render() {
-        // Prep data
-        // let chartData = this.state.data.map((d) => {
-        //     let selected = d[this.state.idVar].toLowerCase().match(this.state.search) !== null;
-        //     return {
-        //         x:d[this.state.xVar],
-        //         y:d[this.state.yVar],
-        //         group:d[this.state.groupVar],
-        //         id:d[this.state.idVar],
-        //         selected:selected
-        //     }
-        // });
-
-        let chartData = this.state.data.slice(0, this.state.filterNum);
-
-        // chartData = chartData.sort((x,y) => d3.descending(x.y, y.y));
-        // nest data
-        // let nestedData = d3.nest()
-        //     .key((d) => d.State)
-        //     .rollup(function (s) { return {
-        //         x: d3.mean(s, (d) => d.Delinquency),
-        //         y: d3.mean(s, (d) => d.DaysOnMarket)
-        //      }; })
-        //     .entries(this.state.data);
-        //
-        // this.setState({data:nestedData});
 
         if (!this.state.data.length) {
             return (<h1> Loading raw data from www.zillow.com/research/data/ </h1>);
         }
 
         let fullWidth = window.innerWidth * .7,
-            fullHeight = window.innerHeight - 120;
+            fullHeight = window.innerHeight;
         let params = {
                 bins: 20,
                 width: fullWidth -150,
                 height: fullHeight - 150,
-                leftMargin: 70,
+                leftMargin: 100,
                 topMargin: 0,
                 bottomMargin: 50,
                 renderType: this.state.renderType,
@@ -147,20 +144,22 @@ class App extends Component{
         // Return ScatterPlot element
 		return (
 
-            <div className="App">
-                <h1 className="header"> Zillow Housing Research Data by City </h1>
-                <Controls
-                    changeFilter={this.changeFilter}
-                    changeRender={this.changeRender}
-                    search={this.search}
-                    filterNum={this.state.filterNum}
-                    renderType={this.state.renderType}
-                />
-                    <svg width={fullWidth} height={fullHeight}>
-                        <PlotComponent {...params} data={chartData} search={this.state.search}/>
-                    </svg>
+           <div className="App">
+                <h1 className="header"> Explore the vast galaxy of github repos! </h1>
+                <Loading loading={this.state.loading}/>
+
+                <svg width={fullWidth} height={fullHeight}>
+                    <PlotComponent {...params} data={this.state.data} search={this.state.searchQ}/>
+                </svg>
                 <div className="marked"></div>
-                <div className="info"><h3> " Click to show readme and stats! "</h3></div>
+                <div className="info"><h3>Click a Bar show readme and stats!</h3>
+                    <Controls
+                        searchQ={this.state.searchQ}
+                        search={this.search}
+                        language={this.state.language}
+                        changeLanguage={this.changeLanguage}
+                    />
+                </div>
             </div>
 		);
 	}
