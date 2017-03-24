@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "proxy": "http://localhost:4000",
   "private": true,
-  "homepage": "https://housing-market.herokuapp.com/",
+  "homepage": "https://github-reactd3.herokuapp.com/",
   "devDependencies": {
     "babel-preset-es2016": "^6.16.0",
     "autoprefixer": "6.5.1",

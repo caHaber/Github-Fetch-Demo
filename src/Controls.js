@@ -1,4 +1,3 @@
-// Scatterplot
 import React from 'react';
 import './Controls.css';
 import {MuiThemeProvider, SelectField, MenuItem, TextField} from 'material-ui';

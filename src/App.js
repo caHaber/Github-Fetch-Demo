@@ -43,23 +43,29 @@ class App extends Component{
 
 
         let app = this;
-        let lanT = '+language:' + this.state.language;
+        let lanT = 'language:' + this.state.language + '&';
+        let searchT = this.state.language;
 
         if(this.state.language === 'all'){
             lanT = '';
         }
 
-        fetch('https://api.github.com/search/repositories?' + 'q=' + this.state.searchQ + lanT + '&sort=stars&order=desc')
+        if(this.state.searchQ === ''){
+            searchT = '';
+        }
+
+        fetch('https://api.github.com/search/repositories?q=' + searchT + lanT + 'sort=stars&order=desc')
             .then(function(response) {
                return response.json();
             }).then(function (action) {
 
-
+            console.log(action);
                 action  =  action.items.map((d) => {
 
                         return  {
                             x : d[app.state.xVar],
                             y : d[app.state.yVar],
+                            forks: d['forks'],
                             id: d.html_url,
                             name: d.full_name};
 
@@ -68,6 +74,7 @@ class App extends Component{
 
                     });
                     app.setState({data: action});
+
             }).then(this.mergeData());
 
     }
@@ -124,7 +131,7 @@ class App extends Component{
 	render() {
 
         if (!this.state.data.length) {
-            return (<h1> Loading raw data from www.zillow.com/research/data/ </h1>);
+            return (<h1> Loading raw data from api.github.com/search/repositories </h1>);
         }
 
         let fullWidth = window.innerWidth * .7,
@@ -152,7 +159,7 @@ class App extends Component{
                     <PlotComponent {...params} data={this.state.data} search={this.state.searchQ}/>
                 </svg>
                 <div className="marked"></div>
-                <div className="info"><h3>Click a Bar show readme and stats!</h3>
+                <div className="info"><h3>Click a Bar show readme!</h3>
                     <Controls
                         searchQ={this.state.searchQ}
                         search={this.search}

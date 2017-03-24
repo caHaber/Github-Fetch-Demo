@@ -68,14 +68,7 @@ var BarChart = function(){
                 var xAxis = d3.axisBottom();
                 var yAxis = d3.axisLeft();
 
-                var tip = d3tip()
-                          .attr('class', 'd3-tip')
-                          .offset([-10, 0])
-                          .html(function(d) {
-                            return "<strong>" + d.y + " : " + d.x + "</strong>";
-                          });
 
-                ele.select('svg').call(tip);
 
                 //Sorts data on descending
                 let names = data.map((d) => (d.y))
@@ -97,6 +90,15 @@ var BarChart = function(){
                     .selectAll("text").text((d) => d.split("/")[1])
                     .style("text-anchor", "end");
 
+                var tip = d3tip()
+                    .attr('class', 'd3-tip')
+                    .offset([-60,50])
+                    .html(function(d) {
+                        return "<strong>" + d.y + " : " + d.x + "</strong>";
+                    });
+
+                ele.select('svg').call(tip);
+
                 // Update titles
                 ele.select('.title.x').text(xTitle)
                 ele.select('.title.y').text(yTitle)
@@ -109,11 +111,11 @@ var BarChart = function(){
 
                 function mouseover(){
                     d3.select(this).classed('pulse',true);
-                    tip.show
+                    tip.show();
                 }
                 function mouseout(){
                     d3.select(this).classed('pulse',false);
-                    tip.show
+                    tip.hide();
                 }
 
                 bars.enter().append('rect')
@@ -123,8 +125,8 @@ var BarChart = function(){
         			.style('opacity', .3)
         			.attr('x', 0)
                     .attr('height', yScale.bandwidth())
-                    .on('mouseover', mouseover)
-                    .on('mouseout', mouseout)
+                    .on('mouseover', tip.show)
+                    .on('mouseout', tip.hide)
                     .on('click', click)
                     // Transition properties of the + update selections
                     .merge(bars)
