@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "proxy": "http://localhost:4000",
   "private": true,
-  "homepage": "https://github-reactd3.herokuapp.com/",
+  "homepage": "./",
   "devDependencies": {
     "babel-preset-es2016": "^6.16.0",
     "autoprefixer": "6.5.1",
@@ -54,11 +54,11 @@
   "dependencies": {
     "d3": "^4.4.0",
     "d3-tip": "^0.7.1",
-    "marked": "^0.3.6",
-    "material-ui": "^0.16.4",
+    "material-ui": "^0.19.4",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
-    "react-tap-event-plugin": "^2.0.1"
+    "react-tap-event-plugin": "^2.0.1",
+    "semiotic": "1.1.4"
   },
   "scripts": {
     "start": "node scripts/start.js",
