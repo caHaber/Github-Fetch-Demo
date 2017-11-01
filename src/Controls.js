@@ -19,12 +19,16 @@ var Controls = React.createClass({
             <MuiThemeProvider>
                 <div className="controls">
                     <TextField
+                        floatingLabelText="Add keyword to fetch..."
                         id="search"
-                        value={this.props.searchQ}
-                        onChange={this.props.search}
+                        onKeyPress={(ev) => {
+                                if (ev.key === 'Enter') {
+                                    this.props.search(ev.target.value);
+                                    ev.preventDefault();
+                                }
+                            }}
                     />
                     <SelectField
-                        floatingLabelText="Primary Language"
                         value={this.props.language}
                         onChange={this.props.changeLanguage}
                     >
@@ -33,7 +37,7 @@ var Controls = React.createClass({
                         <MenuItem value={'java'} primaryText="Java" />
                         <MenuItem value={'css'} primaryText="CSS" />
                         <MenuItem value={'c++'} primaryText="C++" />
-                        <MenuItem value={'all'} primaryText="All Languages" />
+                        <MenuItem value={''} primaryText="All Languages" />
                     </SelectField>
                 </div>
 

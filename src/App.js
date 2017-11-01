@@ -44,16 +44,12 @@ class App extends Component{
 
         let app = this;
         let lanT = 'language:' + this.state.language + '&';
-        let searchT = this.state.language;
-
-        if(this.state.language === 'all'){
-            lanT = '';
-        }
+        let searchT = this.state.searchQ + '+';
 
         if(this.state.searchQ === ''){
             searchT = '';
         }
-
+        console.log('https://api.github.com/search/repositories?q=' + searchT + lanT + 'sort=stars&order=desc')
         fetch('https://api.github.com/search/repositories?q=' + searchT + lanT + 'sort=stars&order=desc')
             .then(function(response) {
                return response.json();
@@ -105,7 +101,7 @@ class App extends Component{
                 }, Math.random() * 2000 + 1000);
         });
 
-        p1.then(app.setState({searchQ:event.target.value.toLowerCase()}));
+        p1.then(app.setState({searchQ:event}));
     }
 
     changeLanguage(event, index, value){
@@ -135,11 +131,11 @@ class App extends Component{
         }
 
         let fullWidth = window.innerWidth * .7,
-            fullHeight = window.innerHeight;
+            fullHeight = 650;
         let params = {
                 bins: 20,
                 width: fullWidth -150,
-                height: fullHeight - 150,
+                height: fullHeight,
                 leftMargin: 100,
                 topMargin: 0,
                 bottomMargin: 50,
@@ -153,13 +149,16 @@ class App extends Component{
 
            <div className="App">
                 <h1 className="header"> Explore the vast galaxy of github repos! </h1>
+                <p className="desc"> This is a React and plain d3 experiment with the github api. The first in a iteration to pursue increased open source participation.
+                Select a language and enter a keyword to search! Click a Bar to fetch the readme!
+                </p>
                 <Loading loading={this.state.loading}/>
 
                 <svg width={fullWidth} height={fullHeight}>
                     <PlotComponent {...params} data={this.state.data} search={this.state.searchQ}/>
                 </svg>
                 <div className="marked"></div>
-                <div className="info"><h3>Click a Bar show readme!</h3>
+                <div className="info">
                     <Controls
                         searchQ={this.state.searchQ}
                         search={this.search}

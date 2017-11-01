@@ -2,7 +2,7 @@
   h1 {
     font-family: 'Ubuntu', sans-serif;
     font-size: 1.8em;
-    padding-left: 30px;
+    margin-left: 7vw;
     top: 10px;
   }
 
@@ -39,6 +39,11 @@
   .info {
     width:22vw;
     position: absolute;
-    top:20px;
+    top:20vh;
     right: 39vw;
+  }
+
+  .desc {
+    margin-left: 7vw;
+    width: 30vw;
   }

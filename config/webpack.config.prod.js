@@ -57,6 +57,9 @@ module.exports = {
     require.resolve('./polyfills'),
     paths.appIndexJs
   ],
+  externals:[{
+    xmlhttprequest: '{XMLHttpRequest:XMLHttpRequest}'
+  }],
   output: {
     // The build folder.
     path: paths.appBuild,

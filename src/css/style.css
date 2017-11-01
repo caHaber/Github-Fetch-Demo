@@ -1,0 +1,33 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Ubuntu', sans-serif;
+  background-color: whitesmoke;
+}  
+
+h1 {
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 1.8em;
+  padding-left: 30px;
+  top: 10px;
+}
+
+h2,h3,h4{
+  font-family: 'Helevetica', sans-serif;
+  padding-left: 30px;
+}
+
+.loader {
+  position: fixed;
+  top: 33vh;
+  left: 33vw;
+  width: 10%;
+}
+
+
+.info {
+  width:22vw;
+  position: absolute;
+  top:0;
+  right: 0;
+}
